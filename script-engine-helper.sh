@@ -2,7 +2,6 @@
 
 ACTION=$1
 
-PLUGIN_DOCKER_IMG="31920/android-mgc:v1"
 PLUGIN_DOCKER_BIN="/app/system/miner.plugin-dockerd.ipk/bin"
 PLUGIN_MGC_SDK_PATH="/app/system/miner.plugin-mgcapp.ipk/depend/mgc_sdk"
 PLUGIN_MGC_APP_PATH="/app/system/miner.plugin-mgcapp.ipk/depend/mgc_app"
@@ -17,6 +16,11 @@ function log () {
 
 ulimit -v unlimited
 export PATH=$PATH:$PLUGIN_DOCKER_BIN
+
+PLUGIN_DOCKER_REPO="31920/android-mgc"
+PLUGIN_DOCKER_MAX_TAG=`docker images --format "{{.Repository}}:{{.Tag}}" | grep "$PLUGIN_DOCKER_REPO" | awk -F ":v" '{print $2 | "sort -r -n"}' | head -1`
+PLUGIN_DOCKER_IMG="$PLUGIN_DOCKER_REPO:v$PLUGIN_DOCKER_MAX_TAG"
+
 
 if [ "$ACTION" = "start" ]; then
     PLUGIN_CONTAINER_NAME=$2
